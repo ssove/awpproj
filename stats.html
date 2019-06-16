@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <title>Overstats</title>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="assets/css/main.css" />
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+        <script src="assets/js/rest_urls.js"></script>
+        <script>
+            function getCompleteStats(battletag) {
+                battletag = battletag.split("#");
+
+                if (!battletag[0] || !battletag[1]) {
+                    alert("잘못된 배틀태그 입력입니다.");
+                    return;
+                }
+
+                let url = getCompleteStatsUrl(battletag[0], battletag[1]);
+
+                $.ajax({
+                    url: url,
+                    type: "GET",
+                    success: function(response) {
+                        // console.log(response);
+                        console.log(response["competitiveStats"]);
+                        $("#hero").html("");
+                        display(response["competitiveStats"]);
+                    }
+                });
+            }
+
+            function display(data) {
+                let stats = data["careerStats"],
+                    heroesInEnglish = [
+                        "ana", "ashe", "baptiste", "bastion", "brigitte", "dVa", "doomfist", "genji",
+                        "hanzo", "junkrat", "lucio", "mccree", "mei", "mercy", "moira", "orisa", "pharah",
+                        "reaper", "reinhardt", "roadhog", "soldier76", "sombra", "symmetra", "torbjorn",
+                        "tracer", "widowmaker", "winston", "wreckingBall", "zarya", "zenyatta"
+                    ],
+                    heroesInKorean = [
+                        "아나", "애쉬", "바티스트", "바스티온", "브리기테", "디바", "둠피스트", "겐지",
+                        "한조", "정크랫", "루시우", "맥크리", "메이", "메르시", "모이라", "오리사", "파라",
+                        "리퍼", "라인하르트", "로드호그", "솔져76", "솜브라", "시메트라", "토르비욘",
+                        "트레이서", "위도우메이커", "윈스턴", "레킹볼", "자리야", "젠야타"
+                    ],
+                    hero, best;
+
+                for (let i = 0; i < heroesInEnglish.length; ++i) {
+                    hero = stats[heroesInEnglish[i]];
+
+                    if (hero) {
+                        best = parseHeroBest(hero);
+                        best.name = heroesInKorean[i];
+                        createRow(best);
+                    }
+                }
+            }
+
+            function parseHeroBest(hero) {
+                let best = {};
+
+                if (hero.assists && hero.assists.healingDoneMostInGame) {
+                    best.healDone = hero.assists.healingDoneMostInGame;
+                } else {
+                    best.headDone = 0;
+                }
+
+                best.damageDone = hero.best.allDamageDoneMostInGame;
+                best.eliminations = hero.best.eliminationsMostInGame;
+                best.killsStreak = hero.best.killsStreakBest;
+                best.timeSpentOnFire = hero.best.timeSpentOnFireMostInGame;
+                best.objectiveKills = hero.best.objectiveKillsMostInGame;
+                best.win = hero.game.gamesWon;
+                best.lose = hero.game.gamesLost;
+                best.winPercentage = hero.game.winPercentage;
+
+                return best;
+            }
+
+            function createRow(data) {
+
+            }
+
+            let params = (unescape(window.location.href).split("?"))[1],
+                battletag = (params.split("="))[1];
+
+            getCompleteStats(battletag);
+        </script>
+    </head>
+
+    <body class="is-preload">
+        <table class="table">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">영웅</th>
+                    <th scope="col">승리한 게임</th>
+                    <th scope="col">처치</th>
+                    <th scope="col">딜량</th>
+                    <th scope="col">힐량</th>
+                    <th scope="col">연속 처치</th>
+                    <th scope="col">단독 처치</th>
+                    <th scope="col">명중률</th>
+                    <th scope="col">폭주 시간</th>
+                </tr>
+            </thead>
+            <tbody id="hero"></tbody>
+        </table>
+
+        <!-- Scripts -->
+        <script src="assets/js/main.js"></script>
+    </body>
+
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE HTML>
+<!--
+	Eventually by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+
+	<head>
+		<title>Overstats</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+	</head>
+
+	<body class="is-preload">
+
+		<!-- Header -->
+		<header id="header">
+			<h1>Overstats</h1>
+			<p>당신의 오버워치 전적을 검색하고 다른 사람에게 자랑하세요.</p>
+		</header>
+
+		<form id="signup-form" method="get" action="stats.html">
+			<input id="battletag" type="text" name="battletag" placeholder="Battletag" />
+			<button id="search" type="submit" class="btn btn-secondary"><span style="color: black;">검색</span></button>
+		</form>
+
+		<!-- Scripts -->
+		<script src="assets/js/main.js"></script>
+		<script>
+			$(document).keypress(function(event) {
+				if (event.which === 13) {
+					event.preventDefault();
+					getCompleteStats();
+				}
+			});
+		</script>
+
+	</body>
+
+</html>
