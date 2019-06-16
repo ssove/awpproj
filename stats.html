@@ -62,12 +62,13 @@
             }
 
             function parseHeroBest(hero) {
-                let best = {};
+                let best = {},
+                    keys;
 
-                if (hero.assists && hero.assists.healingDoneMostInGame) {
+                if (hero.assists) {
                     best.healDone = hero.assists.healingDoneMostInGame;
                 } else {
-                    best.headDone = 0;
+                    best.healDone = 0;
                 }
 
                 best.damageDone = hero.best.allDamageDoneMostInGame;
@@ -78,12 +79,46 @@
                 best.win = hero.game.gamesWon;
                 best.lose = hero.game.gamesLost;
                 best.winPercentage = hero.game.winPercentage;
+                best.accuracy = hero.game.weaponAccuracyBestInGame;
+
+                keys = Object.keys(best);
+                for (let i in keys) {
+                    if (best[keys[i]] === undefined) {
+                        best[keys[i]] = 0;
+                    }
+                }
+
+                if (best.winPercentage == 0) {
+                    best.winPercentage = "0%";
+                }
+                if (best.timeSpentOnFire == 0) {
+                    best.timeSpentOnFire = "00:00";
+                }
 
                 return best;
             }
 
             function createRow(data) {
+                let table = $("#hero").html();
 
+                $("#hero").html(table + getRowHtmlOfHero(data));
+            }
+
+            function getRowHtmlOfHero(data) {
+                let html = "";
+
+                html += "<tr>";
+                html += "<th scope='row'>" + data.name + "</th>";
+                html += "<td>" + data.win + "/" + data.lose + "(" + data.winPercentage + ")</td>";
+                html += "<td>" + data.eliminations + "</td>";
+                html += "<td>" + data.damageDone + "</td>";
+                html += "<td>" + data.healDone + "</td>";
+                html += "<td>" + data.killsStreak + "</td>";
+                html += "<td>" + data.objectiveKills + "</td>";
+                html += "<td>" + data.accuracy + "</td>";
+                html += "<td>" + data.timeSpentOnFire + "</td>";
+
+                return html;
             }
 
             let params = (unescape(window.location.href).split("?"))[1],
@@ -94,7 +129,7 @@
     </head>
 
     <body class="is-preload">
-        <table class="table">
+        <table class="table table-light table-striped">
             <thead class="thead-dark">
                 <tr>
                     <th scope="col">영웅</th>
@@ -103,7 +138,7 @@
                     <th scope="col">딜량</th>
                     <th scope="col">힐량</th>
                     <th scope="col">연속 처치</th>
-                    <th scope="col">단독 처치</th>
+                    <th scope="col">목표 처치</th>
                     <th scope="col">명중률</th>
                     <th scope="col">폭주 시간</th>
                 </tr>
